@@ -2,6 +2,9 @@ package springbook.user.dao;
 
 import java.sql.SQLException;
 
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
 import springbook.user.domain.User;
 
 public class UserDaoTest {
@@ -9,7 +12,10 @@ public class UserDaoTest {
 		//ConnectionMaker connectionMaker = new DConnectionMaker();	//#4
 		//UserDao dao = new UserDao(connectionMaker);	// #4
 		
-		UserDao dao = new DaoFactory().userDao();	// #5
+		//UserDao dao = new DaoFactory().userDao();	// #5
+		
+		ApplicationContext context = new AnnotationConfigApplicationContext(DaoFactory.class);	// #6
+		UserDao dao = context.getBean("userDao", UserDao.class);	// #6
 		
 		User user = new User();
 		user.setId("whiteship");
