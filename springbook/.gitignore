@@ -1,2 +1,6 @@
 /bin/
 /.settings/
+/.metadata/
+/.recommenders/
+/RemoteSystemsTempFiles/
+/Servers/

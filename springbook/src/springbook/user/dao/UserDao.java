@@ -11,13 +11,15 @@ import springbook.user.domain.User;
 public class UserDao {
 	//private SimpleConnectionMaker simpleConnectionMaker;
 	private ConnectionMaker connectionMaker;
+	private Connection c;	// #7
+	private User user;	// #7
 	
-	public UserDao(ConnectionMaker connectionMaker) {
+	UserDao(ConnectionMaker connectionMaker) {
+	//public UserDao(ConnectionMaker connectionMaker) {
 		//simpleConnectionMaker = new SimpleConnectionMaker();	//#2
 		//connectionMaker = new DConnectionMaker();	//#3
 		this.connectionMaker = connectionMaker;	//#4
 	}
-	
 	
 	public void add(User user) throws ClassNotFoundException, SQLException{
 		//Connection c = simpleConnectionMaker.makeNewConnection();	//#2
@@ -35,20 +37,27 @@ public class UserDao {
 	
 	public User get(String id) throws ClassNotFoundException, SQLException{
 		//Connection c = simpleConnectionMaker.makeNewConnection();	//#2
-		Connection c = connectionMaker.makeConnection();
+		//Connection c = connectionMaker.makeConnection();	// #4
+		this.c = connectionMaker.makeConnection();	// #7
 		PreparedStatement ps = c.prepareStatement("select * from users where id = ?");
 		ps.setString(1, id);
 		ResultSet rs = ps.executeQuery();
 		rs.next();
-		User user = new User();
-		user.setId(rs.getString("id"));
-		user.setName(rs.getString("name"));
-		user.setPassword(rs.getString("password"));
+//		User user = new User();	//#4
+//		user.setId(rs.getString("id"));
+//		user.setName(rs.getString("name"));
+//		user.setPassword(rs.getString("password"));
+		
+		this.user = new User();	// #7
+		this.user.setId(rs.getString("id"));
+		this.user.setName(rs.getString("name"));
+		this.user.setPassword(rs.getString("password"));
+		
 		
 		rs.close();
 		ps.close();
 		c.close();
-		return user;
+		return this.user;
 	}
 	
 }
