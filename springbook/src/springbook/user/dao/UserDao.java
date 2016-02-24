@@ -6,6 +6,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import javax.sql.DataSource;
+
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import springbook.user.domain.User;
@@ -15,6 +17,7 @@ public class UserDao {
 	private ConnectionMaker connectionMaker;
 	private Connection c;	// #7
 	private User user;	// #7
+	private DataSource dataSource;
 	
 //	public UserDao(ConnectionMaker connectionMaker) {
 //	//public UserDao(ConnectionMaker connectionMaker) {
@@ -31,6 +34,11 @@ public class UserDao {
 //		this.connectionMaker = context.getBean("connectionMaker", ConnectionMaker.class);	// #9
 //	}
 	
+	// #p137
+	public void setDataSource(DataSource dataSource){
+		this.dataSource = dataSource;
+	}
+	
 	// #p127
 	public void setConnectionMaker(ConnectionMaker connectionMaker){
 		this.connectionMaker = connectionMaker;
@@ -38,7 +46,8 @@ public class UserDao {
 	
 	public void add(User user) throws ClassNotFoundException, SQLException{
 		//Connection c = simpleConnectionMaker.makeNewConnection();	//#2
-		Connection c = connectionMaker.makeConnection();
+		//Connection c = connectionMaker.makeConnection();	// #7
+		Connection c = dataSource.getConnection();	// #137
 		PreparedStatement ps = c.prepareStatement("insert into users(id, name, password) values(?,?,?)");
 		ps.setString(1, user.getId());
 		ps.setString(2, user.getName());
@@ -53,7 +62,8 @@ public class UserDao {
 	public User get(String id) throws ClassNotFoundException, SQLException{
 		//Connection c = simpleConnectionMaker.makeNewConnection();	//#2
 		//Connection c = connectionMaker.makeConnection();	// #4
-		this.c = connectionMaker.makeConnection();	// #7
+		//this.c = connectionMaker.makeConnection();	// #7
+		this.c = dataSource.getConnection();	// #137
 		PreparedStatement ps = c.prepareStatement("select * from users where id = ?");
 		ps.setString(1, id);
 		ResultSet rs = ps.executeQuery();
