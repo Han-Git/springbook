@@ -12,8 +12,11 @@ public class DaoFactory {
 		//UserDao userDao = new UserDao(connectionMaker);
 		//return userDao;
 		//return new UserDao(new DConnectionMaker());	// #6
-		return new UserDao(connectionMaker());
+		//return new UserDao(connectionMaker());	//#124
 		//return new UserDao();	// #8
+		UserDao userDao = new UserDao();
+		userDao.setConnectionMaker(connectionMaker());
+		return userDao;
 	}
 	
 	@Bean

@@ -16,12 +16,12 @@ public class UserDao {
 	private Connection c;	// #7
 	private User user;	// #7
 	
-	public UserDao(ConnectionMaker connectionMaker) {
-	//public UserDao(ConnectionMaker connectionMaker) {
-		//simpleConnectionMaker = new SimpleConnectionMaker();	//#2
-		//connectionMaker = new DConnectionMaker();	//#3
-		this.connectionMaker = connectionMaker;	//#4
-	}
+//	public UserDao(ConnectionMaker connectionMaker) {
+//	//public UserDao(ConnectionMaker connectionMaker) {
+//		//simpleConnectionMaker = new SimpleConnectionMaker();	//#2
+//		//connectionMaker = new DConnectionMaker();	//#3
+//		this.connectionMaker = connectionMaker;	//#4
+//	}
 	
 //	public UserDao(){
 ////		DaoFactory daoFactory = new DaoFactory();	// #8
@@ -30,6 +30,11 @@ public class UserDao {
 //		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(DaoFactory.class);	// #9
 //		this.connectionMaker = context.getBean("connectionMaker", ConnectionMaker.class);	// #9
 //	}
+	
+	// #p127
+	public void setConnectionMaker(ConnectionMaker connectionMaker){
+		this.connectionMaker = connectionMaker;
+	}
 	
 	public void add(User user) throws ClassNotFoundException, SQLException{
 		//Connection c = simpleConnectionMaker.makeNewConnection();	//#2
