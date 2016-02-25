@@ -15,21 +15,28 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import springbook.user.domain.User;
 
 public class UserDaoTest {
-	private UserDao dao;
+	private UserDao dao;	// #p180
+	private User user1;	//#p183
+	private User user2;	//#p183
+	private User user3;	//#p183
 	
 	@Before
 	public void setUp(){
 		ApplicationContext context = new GenericXmlApplicationContext("applicationContext.xml");	// #p180
 		this.dao = context.getBean("userDao", UserDao.class);	// #p180
+		
+		this.user1 = new User("gyumee", "박성철","springno1");	//#p183
+		this.user2 = new User("jhm", "정명한","springno2");	//#p183
+		this.user3 = new User("lyg", "이용규","springno3");	//#p183
 	}
 	
 	@Test
 	public void count() throws SQLException, ClassNotFoundException{
 //		ApplicationContext context = new GenericXmlApplicationContext("applicationContext.xml");	// #p169
 //		UserDao dao = context.getBean("userDao", UserDao.class);	// #p169
-		User user1 = new User("gyumee", "박성철","springno1");
-		User user2 = new User("jhm", "정명한","springno2");
-		User user3 = new User("lyg", "이용규","springno3");
+//		User user1 = new User("gyumee", "박성철","springno1");
+//		User user2 = new User("jhm", "정명한","springno2");
+//		User user3 = new User("lyg", "이용규","springno3");
 		
 		dao.deleteAll();
 		assertThat(dao.getCount(),is(0));	// #p167
@@ -52,8 +59,8 @@ public class UserDaoTest {
 //		user.setName("박성철");	// #p158
 //		user.setPassword("springno1");	// #p158
 		
-		User user1 = new User("gyumee", "박성철","springno1");		//#171
-		User user2 = new User("leegw700", "이길원","springno2");	//#171
+//		User user1 = new User("gyumee", "박성철","springno1");		//#171
+//		User user2 = new User("leegw700", "이길원","springno2");	//#171
 		
 		dao.deleteAll();	//#171
 		assertThat(dao.getCount(),is(0));	// #p167
