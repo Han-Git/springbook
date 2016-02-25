@@ -24,8 +24,9 @@ import springbook.user.domain.User;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)	// #p185
-@ContextConfiguration(locations="/applicationContext.xml")	// #p185
-@DirtiesContext		//#p191
+//@ContextConfiguration(locations="/applicationContext.xml")	// #p185
+@ContextConfiguration(locations="/test-applicationContext.xml")	// #p194
+//@DirtiesContext		//#p191
 public class UserDaoTest {
 	
 	@Autowired
@@ -41,8 +42,8 @@ public class UserDaoTest {
 	public void setUp(){
 //		ApplicationContext context = new GenericXmlApplicationContext("applicationContext.xml");	// #p180
 //		this.dao = context.getBean("userDao", UserDao.class);	// #p180
-		DataSource dataSource = new SingleConnectionDataSource("jdbc:mysql://localhost:3306/testdb", "jmh","jmh", true);
-		dao.setDataSource(dataSource);
+//		DataSource dataSource = new SingleConnectionDataSource("jdbc:mysql://localhost:3306/testdb", "jmh","jmh", true);
+//		dao.setDataSource(dataSource);
 		this.user1 = new User("gyumee", "박성철","springno1");	//#p183
 		this.user2 = new User("jhm", "정명한","springno2");	//#p183
 		this.user3 = new User("lyg", "이용규","springno3");	//#p183
