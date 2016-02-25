@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import javax.sql.DataSource;
 
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.dao.EmptyResultDataAccessException;
 
 import springbook.user.domain.User;
 
@@ -67,22 +68,61 @@ public class UserDao {
 		PreparedStatement ps = c.prepareStatement("select * from users where id = ?");
 		ps.setString(1, id);
 		ResultSet rs = ps.executeQuery();
-		rs.next();
+//		rs.next();
 //		User user = new User();	//#4
 //		user.setId(rs.getString("id"));
 //		user.setName(rs.getString("name"));
 //		user.setPassword(rs.getString("password"));
 		
+		/*
 		this.user = new User();	// #7
 		this.user.setId(rs.getString("id"));
 		this.user.setName(rs.getString("name"));
 		this.user.setPassword(rs.getString("password"));
+		*/
 		
+		User user = null;	//#p173
+		if(rs.next()){
+			user = new User();	//#p173
+			user.setId(rs.getString("id"));	//#p173
+			user.setName(rs.getString("name"));	//#p173
+			user.setPassword(rs.getString("password"));	//#p173
+		}
 		
 		rs.close();
 		ps.close();
 		c.close();
-		return this.user;
+		
+		if(user == null){
+			throw new EmptyResultDataAccessException(1);
+		}
+		//return this.user;
+		return user; 	//#p173
 	}
 	
+	public void deleteAll() throws SQLException{
+		Connection c = dataSource.getConnection();	//#p164
+		
+		PreparedStatement ps = c.prepareStatement("delete from users");	//#p164
+		ps.executeUpdate();	//#p164
+		
+		ps.close();	//#p164
+		c.close();	//#p164
+	}
+	
+	public int getCount() throws SQLException{
+		Connection c = dataSource.getConnection();
+		
+		PreparedStatement ps = c.prepareStatement("select count(*) from users");
+		
+		ResultSet rs = ps.executeQuery();
+		rs.next();
+		int count = rs.getInt(1);
+		
+		rs.close();
+		ps.close();
+		c.close();
+		
+		return count;
+	}
 }
