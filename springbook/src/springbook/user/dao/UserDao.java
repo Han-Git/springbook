@@ -110,12 +110,13 @@ public class UserDao {
 		c.close();	//#p164
 		*/
 		
+		/*
 		Connection c = null;	//#p211
 		PreparedStatement ps = null;	//#p211
 		
 		try{
 			c = dataSource.getConnection();	//#p211
-			ps = c.prepareStatement("delete from users;");	//#p211
+			ps = c.prepareStatement("delete from users");	//#p211
 			ps.executeUpdate();	//#p211
 		}catch(SQLException e){
 			throw e;	//#p211
@@ -135,6 +136,10 @@ public class UserDao {
 				}
 			}
 		}
+		*/
+		
+		StatementStrategy st = new DeleteAllStatement();
+		jdbcContextWithStatementStrategy(st);
 	}
 	
 	public int getCount() throws SQLException{
@@ -192,5 +197,34 @@ public class UserDao {
 		
 		return count;
 		*/
+	}
+	
+	public void jdbcContextWithStatementStrategy(StatementStrategy stmt) throws SQLException{
+		Connection c = null;	//#223
+		PreparedStatement ps = null;	//#223
+		
+		try{
+			c = dataSource.getConnection();	//#223
+			ps = stmt.makePreparedStatement(c);	//#223
+			
+			ps.executeUpdate();	//#223
+		}catch(SQLException e){
+			throw e;	//#223
+		}finally {
+			if(ps != null){
+				try{
+					ps.close();	//#223
+				}catch(SQLException e){
+					
+				}
+			}
+			if(c != null){
+				try{
+					c.close();	//#223
+				}catch(SQLException e){
+					
+				}
+			}
+		}
 	}
 }
