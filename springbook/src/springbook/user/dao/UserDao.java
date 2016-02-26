@@ -61,6 +61,7 @@ public class UserDao {
 	}
 	
 	public User get(String id) throws ClassNotFoundException, SQLException{
+		
 		//Connection c = simpleConnectionMaker.makeNewConnection();	//#2
 		//Connection c = connectionMaker.makeConnection();	// #4
 		//this.c = connectionMaker.makeConnection();	// #7
@@ -74,12 +75,10 @@ public class UserDao {
 //		user.setName(rs.getString("name"));
 //		user.setPassword(rs.getString("password"));
 		
-		/*
-		this.user = new User();	// #7
-		this.user.setId(rs.getString("id"));
-		this.user.setName(rs.getString("name"));
-		this.user.setPassword(rs.getString("password"));
-		*/
+//		this.user = new User();	// #7
+//		this.user.setId(rs.getString("id"));
+//		this.user.setName(rs.getString("name"));
+//		this.user.setPassword(rs.getString("password"));
 		
 		User user = null;	//#p173
 		if(rs.next()){
@@ -101,6 +100,7 @@ public class UserDao {
 	}
 	
 	public void deleteAll() throws SQLException{
+		/*
 		Connection c = dataSource.getConnection();	//#p164
 		
 		PreparedStatement ps = c.prepareStatement("delete from users");	//#p164
@@ -108,9 +108,76 @@ public class UserDao {
 		
 		ps.close();	//#p164
 		c.close();	//#p164
+		*/
+		
+		Connection c = null;	//#p211
+		PreparedStatement ps = null;	//#p211
+		
+		try{
+			c = dataSource.getConnection();	//#p211
+			ps = c.prepareStatement("delete from users;");	//#p211
+			ps.executeUpdate();	//#p211
+		}catch(SQLException e){
+			throw e;	//#p211
+		}finally {
+			if(ps != null){
+				try{
+					ps.close();	//#p211
+				}catch(SQLException e){
+					
+				}
+			}
+			if(c != null){
+				try{
+					c.close();	//#p211
+				}catch(SQLException e){
+					
+				}
+			}
+		}
 	}
 	
 	public int getCount() throws SQLException{
+		Connection c = null;	//#p213
+		PreparedStatement ps = null;	//#p213
+		ResultSet rs = null;	//#p213
+		
+		try{
+			c = dataSource.getConnection();	//#p213
+			
+			ps = c.prepareStatement("select count(*) from users");	//#p213
+			
+			rs = ps.executeQuery();	//#p213
+			rs.next();	//#p213
+			return rs.getInt(1);	//#p213
+			
+		}catch(SQLException e){
+			throw e;	//#p213
+		}finally {
+			if(rs != null){
+				try{
+					rs.close();
+				}catch(SQLException e){
+					
+				}
+			}
+			if(ps != null){
+				try{
+					ps.close();	//#p213
+				}catch(SQLException e){
+					
+				}
+			}
+			if(c != null){
+				try{
+					c.close();	//#p213
+				}catch(SQLException e){
+					
+				}
+			}
+		}
+		
+		/*
 		Connection c = dataSource.getConnection();
 		
 		PreparedStatement ps = c.prepareStatement("select count(*) from users");
@@ -124,5 +191,6 @@ public class UserDao {
 		c.close();
 		
 		return count;
+		*/
 	}
 }
