@@ -48,6 +48,7 @@ public class UserDao {
 	public void add(User user) throws ClassNotFoundException, SQLException{
 		//Connection c = simpleConnectionMaker.makeNewConnection();	//#2
 		//Connection c = connectionMaker.makeConnection();	// #7
+		/*
 		Connection c = dataSource.getConnection();	// #137
 		PreparedStatement ps = c.prepareStatement("insert into users(id, name, password) values(?,?,?)");
 		ps.setString(1, user.getId());
@@ -58,6 +59,10 @@ public class UserDao {
 		
 		ps.close();
 		c.close();
+		*/
+		
+		StatementStrategy st = new AddStatement(user);	// #p226
+		jdbcContextWithStatementStrategy(st);	// #p226
 	}
 	
 	public User get(String id) throws ClassNotFoundException, SQLException{
