@@ -20,7 +20,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)	//#p203
-@ContextConfiguration	//#p203
+@ContextConfiguration(locations="/springbook/learningtest/junit/junit.xml")	//#p203
 public class JUnitTest {
 	@Autowired	//#p203
 	ApplicationContext context;	//#p203
