@@ -7,6 +7,7 @@ import java.sql.SQLException;
 
 import javax.sql.DataSource;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 
 import springbook.user.domain.User;
@@ -191,6 +192,7 @@ public class UserDao {
 		
 		// anonymous inner class
 		//jdbcContextWithStatementStrategy(	//#p231
+		
 		// DI 받은 jdbcContext의 컨텍스트 메소드를 사용하도록 변경
 		this.jdbcContext.workWithStatementStrategy(	//#p233
 			new StatementStrategy(){	//#p231
@@ -258,7 +260,7 @@ public class UserDao {
 		return count;
 		*/
 	}
-	/*
+	
 	public void jdbcContextWithStatementStrategy(StatementStrategy stmt) throws SQLException{
 		Connection c = null;	//#223
 		PreparedStatement ps = null;	//#223
@@ -287,5 +289,5 @@ public class UserDao {
 			}
 		}
 	}
-	*/
+	
 }

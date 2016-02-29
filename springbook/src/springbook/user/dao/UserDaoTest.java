@@ -23,13 +23,13 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import springbook.user.domain.User;
 
 
-//@RunWith(SpringJUnit4ClassRunner.class)	// #p185
+@RunWith(SpringJUnit4ClassRunner.class)	// #p185
 //@ContextConfiguration(locations="/applicationContext.xml")	// #p185
-//@ContextConfiguration(locations="/test-applicationContext.xml")	// #p194
+@ContextConfiguration(locations="/test-applicationContext.xml")	// #p194
 //@DirtiesContext		//#p191
 public class UserDaoTest {
 	
-//	@Autowired
+	@Autowired
 	UserDao dao;	//#p188
 //	private ApplicationContext context;	//#p185
 	
@@ -40,13 +40,13 @@ public class UserDaoTest {
 	
 	@Before
 	public void setUp(){
-//		ApplicationContext context = new GenericXmlApplicationContext("applicationContext.xml");	// #p180
-//		this.dao = context.getBean("userDao", UserDao.class);	// #p180
-//		DataSource dataSource = new SingleConnectionDataSource("jdbc:mysql://localhost:3306/testdb", "jmh","jmh", true);
-//		dao.setDataSource(dataSource);
-		dao = new UserDao();	//#p195
-		DataSource dataSource = new SingleConnectionDataSource("jdbc:mysql://localhost:3306/testdb", "jmh","jmh", true);	//#p195
-		dao.setDataSource(dataSource);	//#p195
+		ApplicationContext context = new GenericXmlApplicationContext("test-applicationContext.xml");	// #p180
+		this.dao = context.getBean("userDao", UserDao.class);	// #p180
+		DataSource dataSource = new SingleConnectionDataSource("jdbc:mysql://localhost:3306/testdb", "jmh","jmh", true);
+		dao.setDataSource(dataSource);
+//		dao = new UserDao();	//#p195
+//		DataSource dataSource = new SingleConnectionDataSource("jdbc:mysql://localhost:3306/testdb", "jmh","jmh", true);	//#p195
+//		dao.setDataSource(dataSource);	//#p195
 		this.user1 = new User("gyumee", "박성철","springno1");	//#p183
 		this.user2 = new User("jhm", "정명한","springno2");	//#p183
 		this.user3 = new User("lyg", "이용규","springno3");	//#p183
