@@ -17,6 +17,11 @@ public class UserDao {
 	private Connection c;	// #7
 	private User user;	// #7
 	private DataSource dataSource;
+	private JdbcContext jdbcContext;	//#p233
+	
+	public void setJdbcContext(JdbcContext jdbcContext){	//#p233
+		this.jdbcContext = jdbcContext;	//#p233
+	}
 	
 //	public UserDao(ConnectionMaker connectionMaker) {
 //	//public UserDao(ConnectionMaker connectionMaker) {
@@ -125,7 +130,10 @@ public class UserDao {
 //		jdbcContextWithStatementStrategy(st);	// #p226
 		
 		// anonymous inner class
-		jdbcContextWithStatementStrategy(	// #p230
+		//jdbcContextWithStatementStrategy(	// #p230
+		
+		// DI 받은 jdbcContext의 컨텍스트 메소드를 사용하도록 변경
+		this.jdbcContext.workWithStatementStrategy(	//#p233
 			new StatementStrategy(){	// #p230
 				public PreparedStatement makePreparedStatement(Connection c) throws SQLException{	// #p230
 					PreparedStatement ps = c.prepareStatement("insert into users(id,name,password) values(?,?,?)");	// #p230
@@ -182,7 +190,9 @@ public class UserDao {
 //		jdbcContextWithStatementStrategy(st);
 		
 		// anonymous inner class
-		jdbcContextWithStatementStrategy(	//#p231
+		//jdbcContextWithStatementStrategy(	//#p231
+		// DI 받은 jdbcContext의 컨텍스트 메소드를 사용하도록 변경
+		this.jdbcContext.workWithStatementStrategy(	//#p233
 			new StatementStrategy(){	//#p231
 				public PreparedStatement makePreparedStatement(Connection c) throws SQLException {	//#p231
 					return c.prepareStatement("delete from users");	//#p231
@@ -248,7 +258,7 @@ public class UserDao {
 		return count;
 		*/
 	}
-	
+	/*
 	public void jdbcContextWithStatementStrategy(StatementStrategy stmt) throws SQLException{
 		Connection c = null;	//#223
 		PreparedStatement ps = null;	//#223
@@ -277,4 +287,5 @@ public class UserDao {
 			}
 		}
 	}
+	*/
 }
