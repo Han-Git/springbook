@@ -61,6 +61,23 @@ public class UserDao {
 		c.close();
 		*/
 		
+		class AddStatement implements StatementStrategy{
+			User user;	//#p227
+			
+			public AddStatement(User user) {
+				this.user = user;	//#p227
+			}
+			
+			public PreparedStatement makePreparedStatement(Connection c) throws SQLException {
+				PreparedStatement ps = c.prepareStatement("insert into users(id, name, password) values(?,?,?)");	//#p227
+				ps.setString(1, user.getId());	//#p227
+				ps.setString(1, user.getName());	//#p227
+				ps.setString(1, user.getPassword());	//#p227
+				
+				return ps;	//#p227
+			}
+		}
+		
 		StatementStrategy st = new AddStatement(user);	// #p226
 		jdbcContextWithStatementStrategy(st);	// #p226
 	}
