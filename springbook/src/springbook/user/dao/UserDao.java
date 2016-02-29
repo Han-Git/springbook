@@ -45,7 +45,8 @@ public class UserDao {
 		this.connectionMaker = connectionMaker;
 	}
 	
-	public void add(User user) throws ClassNotFoundException, SQLException{
+	//public void add(User user) throws ClassNotFoundException, SQLException{
+	public void add(final User user) throws ClassNotFoundException, SQLException{	// p229
 		//Connection c = simpleConnectionMaker.makeNewConnection();	//#2
 		//Connection c = connectionMaker.makeConnection();	// #7
 		/*
@@ -62,12 +63,13 @@ public class UserDao {
 		*/
 		
 		class AddStatement implements StatementStrategy{
+			/*
 			User user;	//#p227
 			
 			public AddStatement(User user) {
 				this.user = user;	//#p227
 			}
-			
+			*/
 			public PreparedStatement makePreparedStatement(Connection c) throws SQLException {
 				PreparedStatement ps = c.prepareStatement("insert into users(id, name, password) values(?,?,?)");	//#p227
 				ps.setString(1, user.getId());	//#p227
@@ -78,7 +80,8 @@ public class UserDao {
 			}
 		}
 		
-		StatementStrategy st = new AddStatement(user);	// #p226
+//		StatementStrategy st = new AddStatement(user);	// #p226
+		StatementStrategy st = new AddStatement();	// #p229
 		jdbcContextWithStatementStrategy(st);	// #p226
 	}
 	
