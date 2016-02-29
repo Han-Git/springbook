@@ -73,8 +73,8 @@ public class UserDao {
 			public PreparedStatement makePreparedStatement(Connection c) throws SQLException {
 				PreparedStatement ps = c.prepareStatement("insert into users(id, name, password) values(?,?,?)");	//#p227
 				ps.setString(1, user.getId());	//#p227
-				ps.setString(1, user.getName());	//#p227
-				ps.setString(1, user.getPassword());	//#p227
+				ps.setString(2, user.getName());	//#p227
+				ps.setString(3, user.getPassword());	//#p227
 				
 				return ps;	//#p227
 			}
