@@ -20,10 +20,11 @@ public class UserDao {
 	private DataSource dataSource;
 	private JdbcContext jdbcContext;	//#p233
 	
+	/*//p239
 	public void setJdbcContext(JdbcContext jdbcContext){	//#p233
 		this.jdbcContext = jdbcContext;	//#p233
 	}
-	
+	*/
 //	public UserDao(ConnectionMaker connectionMaker) {
 //	//public UserDao(ConnectionMaker connectionMaker) {
 //		//simpleConnectionMaker = new SimpleConnectionMaker();	//#2
@@ -41,6 +42,10 @@ public class UserDao {
 	
 	// #p137
 	public void setDataSource(DataSource dataSource){
+		this.jdbcContext = new JdbcContext();	//#p239
+		
+		this.jdbcContext.setDataSource(dataSource);	//#p239
+		
 		this.dataSource = dataSource;
 	}
 	
