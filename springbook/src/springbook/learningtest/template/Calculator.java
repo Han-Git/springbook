@@ -5,7 +5,8 @@ import java.io.FileReader;
 import java.io.IOException;
 
 public class Calculator {
-
+	
+	// p253 after applying Template/Callback
 	public Integer calcSum(String filepath)throws IOException {
 		/*	//p253
 		BufferedReader br = null;	// #p250
@@ -45,6 +46,7 @@ public class Calculator {
 		return fileReadTemplate(filepath, sumCallback);	//#p253
 	}
 	
+	// p252 Template Method which uses BufferedReaderCallback
 	public Integer fileReadTemplate(String filepath, BufferedReaderCallback callback) throws IOException{
 		BufferedReader br = null;
 		try{
@@ -63,5 +65,21 @@ public class Calculator {
 				}
 			}
 		}
+	}
+	
+	// p254 has the multiply function callback
+	public Integer calcMultiply(String filepath)throws IOException{	//#p254
+		BufferedReaderCallback multiplyCallback = new BufferedReaderCallback(){	//#p254
+			public Integer doSomethingWithReader(BufferedReader br) throws IOException{	//#p254
+				Integer multiply = 1;	//#p254
+				String line = null;	//#p254
+				while((line = br.readLine()) != null){	//#p254
+					multiply *= Integer.valueOf(line);	//#p254
+				}
+				return multiply;	//#p254
+			}
+		};
+			
+		return fileReadTemplate(filepath, multiplyCallback);	//#p254
 	}
 }
