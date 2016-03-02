@@ -209,7 +209,8 @@ public class UserDao {
 			}
 		);
 		*/
-		executeSql("delete from users");
+		//executeSql("delete from users");	// #p245
+		this.jdbcContext.executeSql("delete from users");	// #p246
 	}
 	
 	public int getCount() throws SQLException{
@@ -298,6 +299,7 @@ public class UserDao {
 		}
 	}
 	
+	/*	//p246
 	private void executeSql(final String query)throws SQLException{
 		this.jdbcContext.workWithStatementStrategy(	//#p245
 			new StatementStrategy(){	//#p245
@@ -307,4 +309,5 @@ public class UserDao {
 			}
 		);
 	}
+	*/
 }
