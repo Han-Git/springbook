@@ -198,6 +198,7 @@ public class UserDao {
 		// anonymous inner class
 		//jdbcContextWithStatementStrategy(	//#p231
 		
+		/*	//p245
 		// DI 받은 jdbcContext의 컨텍스트 메소드를 사용하도록 변경
 		this.jdbcContext.workWithStatementStrategy(	//#p233
 			new StatementStrategy(){	//#p231
@@ -207,6 +208,8 @@ public class UserDao {
 				
 			}
 		);
+		*/
+		executeSql("delete from users");
 	}
 	
 	public int getCount() throws SQLException{
@@ -295,4 +298,13 @@ public class UserDao {
 		}
 	}
 	
+	private void executeSql(final String query)throws SQLException{
+		this.jdbcContext.workWithStatementStrategy(	//#p245
+			new StatementStrategy(){	//#p245
+				public PreparedStatement makePreparedStatement(Connection c) throws SQLException {	//#p245
+					return c.prepareStatement(query);	//#p245
+				}
+			}
+		);
+	}
 }
