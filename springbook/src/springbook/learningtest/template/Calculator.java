@@ -31,7 +31,7 @@ public class Calculator {
 			}
 		}
 		*/
-		
+		/*
 		BufferedReaderCallback sumCallback = 	//#p253
 			new BufferedReaderCallback(){	//#p253
 				public Integer doSomethingWithReader(BufferedReader br) throws IOException {	//#p253
@@ -44,8 +44,41 @@ public class Calculator {
 				}	//#p253
 			};	//#p253
 		return fileReadTemplate(filepath, sumCallback);	//#p253
+		*/
+		
+		// p256 revised that using lineReadTemplate()
+		LineCallback sumCallback = new LineCallback(){
+			public Integer doSomethingWithLine(String line, Integer value){
+				return value + Integer.valueOf(line);
+			}
+		};
+		return lineReadTemplate(filepath,sumCallback, 0);
 	}
 	
+	// p254 has the multiply function callback
+	public Integer calcMultiply(String filepath)throws IOException{	//#p254
+		/*
+		BufferedReaderCallback multiplyCallback = new BufferedReaderCallback(){	//#p254
+			public Integer doSomethingWithReader(BufferedReader br) throws IOException{	//#p254
+				Integer multiply = 1;	//#p254
+				String line = null;	//#p254
+				while((line = br.readLine()) != null){	//#p254
+					multiply *= Integer.valueOf(line);	//#p254
+				}
+				return multiply;	//#p254
+			}
+		};
+			
+		return fileReadTemplate(filepath, multiplyCallback);	//#p254
+		*/
+		LineCallback multiplyCallback = new LineCallback(){
+			public Integer doSomethingWithLine(String line, Integer value){
+				return value * Integer.valueOf(line);
+			}
+		};
+		return lineReadTemplate(filepath, multiplyCallback, 1);
+	}
+
 	// p252 Template Method which uses BufferedReaderCallback
 	public Integer fileReadTemplate(String filepath, BufferedReaderCallback callback) throws IOException{
 		BufferedReader br = null;
@@ -67,19 +100,28 @@ public class Calculator {
 		}
 	}
 	
-	// p254 has the multiply function callback
-	public Integer calcMultiply(String filepath)throws IOException{	//#p254
-		BufferedReaderCallback multiplyCallback = new BufferedReaderCallback(){	//#p254
-			public Integer doSomethingWithReader(BufferedReader br) throws IOException{	//#p254
-				Integer multiply = 1;	//#p254
-				String line = null;	//#p254
-				while((line = br.readLine()) != null){	//#p254
-					multiply *= Integer.valueOf(line);	//#p254
-				}
-				return multiply;	//#p254
+	// p255 Template using LineCallback Template
+	public Integer lineReadTemplate(String filepath, LineCallback callback, int initVal)throws IOException{
+		BufferedReader br = null;
+		try{
+			br = new BufferedReader(new FileReader(filepath));
+			Integer res = initVal;
+			String line = null;
+			while((line = br.readLine()) != null){
+				res = callback.doSomethingWithLine(line, res);
 			}
-		};
-			
-		return fileReadTemplate(filepath, multiplyCallback);	//#p254
+			return res;
+		}catch(IOException e){
+			System.out.println(e.getMessage());
+			throw e;
+		}finally {
+			if(br != null){
+				try{
+					br.close();
+				}catch(IOException e){
+					System.out.println(e.getMessage());
+				}
+			}
+		}
 	}
 }
