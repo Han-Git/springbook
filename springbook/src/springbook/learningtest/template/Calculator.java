@@ -47,7 +47,7 @@ public class Calculator {
 		*/
 		
 		// p256 revised that using lineReadTemplate()
-		LineCallback sumCallback = new LineCallback(){
+		LineCallback<Integer> sumCallback = new LineCallback<Integer>(){
 			public Integer doSomethingWithLine(String line, Integer value){
 				return value + Integer.valueOf(line);
 			}
@@ -71,7 +71,7 @@ public class Calculator {
 			
 		return fileReadTemplate(filepath, multiplyCallback);	//#p254
 		*/
-		LineCallback multiplyCallback = new LineCallback(){
+		LineCallback<Integer> multiplyCallback = new LineCallback<Integer>(){
 			public Integer doSomethingWithLine(String line, Integer value){
 				return value * Integer.valueOf(line);
 			}
@@ -101,11 +101,13 @@ public class Calculator {
 	}
 	
 	// p255 Template using LineCallback Template
-	public Integer lineReadTemplate(String filepath, LineCallback callback, int initVal)throws IOException{
+	// p258 added generic
+	public <T> T lineReadTemplate(String filepath, LineCallback<T> callback, T initVal)throws IOException{
 		BufferedReader br = null;
 		try{
 			br = new BufferedReader(new FileReader(filepath));
-			Integer res = initVal;
+			//Integer res = initVal;
+			T res = initVal;	// #p258
 			String line = null;
 			while((line = br.readLine()) != null){
 				res = callback.doSomethingWithLine(line, res);
@@ -123,5 +125,16 @@ public class Calculator {
 				}
 			}
 		}
+	}
+	
+	// p258 add all strings
+	public String concatenate(String filepath) throws IOException{
+		LineCallback<String> concatenateCallback = new LineCallback<String>(){
+			public String doSomethingWithLine(String line , String value){
+				return value + line;
+			}
+		};
+		
+		return lineReadTemplate(filepath, concatenateCallback, "");
 	}
 }
