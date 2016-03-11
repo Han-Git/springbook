@@ -233,6 +233,9 @@ public class UserDao {
 	}
 	
 	public int getCount() throws SQLException{
+		return this.jdbcTemplate.queryForInt("select count(*) from users");	//#p264
+		/*
+		// #p263
 		return this.jdbcTemplate.query(
 			new PreparedStatementCreator(){
 				public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
@@ -246,7 +249,7 @@ public class UserDao {
 				}
 			}
 		);
-		
+		*/
 		
 		/*
 		Connection c = null;	//#p213
