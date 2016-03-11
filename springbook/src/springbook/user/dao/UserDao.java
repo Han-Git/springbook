@@ -9,6 +9,8 @@ import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCreator;
 
 import springbook.user.domain.User;
 
@@ -19,6 +21,8 @@ public class UserDao {
 	private User user;	// #7
 	private DataSource dataSource;
 	private JdbcContext jdbcContext;	//#p233
+	private JdbcTemplate jdbcTemplate;	//#p260
+	
 	
 	/*//p239
 	public void setJdbcContext(JdbcContext jdbcContext){	//#p233
@@ -42,9 +46,10 @@ public class UserDao {
 	
 	// #p137
 	public void setDataSource(DataSource dataSource){
-		this.jdbcContext = new JdbcContext();	//#p239
+//		this.jdbcContext = new JdbcContext();	//#p239
+//		this.jdbcContext.setDataSource(dataSource);	//#p239
 		
-		this.jdbcContext.setDataSource(dataSource);	//#p239
+		this.jdbcTemplate = new JdbcTemplate(dataSource);	//#p260
 		
 		this.dataSource = dataSource;
 	}
@@ -139,18 +144,20 @@ public class UserDao {
 		//jdbcContextWithStatementStrategy(	// #p230
 		
 		// DI 받은 jdbcContext의 컨텍스트 메소드를 사용하도록 변경
-		this.jdbcContext.workWithStatementStrategy(	//#p233
-			new StatementStrategy(){	// #p230
-				public PreparedStatement makePreparedStatement(Connection c) throws SQLException{	// #p230
-					PreparedStatement ps = c.prepareStatement("insert into users(id,name,password) values(?,?,?)");	// #p230
-					ps.setString(1, user.getId());	// #p230
-					ps.setString(2, user.getName());	// #p230
-					ps.setString(3, user.getPassword());	// #p230
-					
-					return ps;	// #p230
-				}
-			}
-		);
+//		this.jdbcContext.workWithStatementStrategy(	//#p233
+//			new StatementStrategy(){	// #p230
+//				public PreparedStatement makePreparedStatement(Connection c) throws SQLException{	// #p230
+//					PreparedStatement ps = c.prepareStatement("insert into users(id,name,password) values(?,?,?)");	// #p230
+//					ps.setString(1, user.getId());	// #p230
+//					ps.setString(2, user.getName());	// #p230
+//					ps.setString(3, user.getPassword());	// #p230
+//					
+//					return ps;	// #p230
+//				}
+//			}
+//		);
+		
+		this.jdbcTemplate.update("insert into users (id,name,password) values(?,?,?)",user.getId(),user.getName(),user.getPassword());	//#p262
 	}
 	
 	public void deleteAll() throws SQLException{
@@ -210,7 +217,18 @@ public class UserDao {
 		);
 		*/
 		//executeSql("delete from users");	// #p245
-		this.jdbcContext.executeSql("delete from users");	// #p246
+		//this.jdbcContext.executeSql("delete from users");	// #p246
+		
+		// #p260
+//		this.jdbcTemplate.update(
+//			new PreparedStatementCreator(){
+//				public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
+//					
+//					return con.prepareStatement("delete from users");
+//				}
+//			}
+//		);
+		this.jdbcTemplate.update("delete from users");	// #p261
 	}
 	
 	public int getCount() throws SQLException{
