@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.core.ResultSetExtractor;
 
 import springbook.user.domain.User;
 
@@ -232,6 +233,22 @@ public class UserDao {
 	}
 	
 	public int getCount() throws SQLException{
+		return this.jdbcTemplate.query(
+			new PreparedStatementCreator(){
+				public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
+					return con.prepareStatement("select count(*) from users");
+				}
+			},
+			new ResultSetExtractor<Integer>() {
+				public Integer extractData(ResultSet rs)throws SQLException{
+					rs.next();
+					return rs.getInt(1);
+				}
+			}
+		);
+		
+		
+		/*
 		Connection c = null;	//#p213
 		PreparedStatement ps = null;	//#p213
 		ResultSet rs = null;	//#p213
@@ -270,7 +287,7 @@ public class UserDao {
 				}
 			}
 		}
-		
+		*/
 		/*
 		Connection c = dataSource.getConnection();
 		
