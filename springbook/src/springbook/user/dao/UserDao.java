@@ -12,6 +12,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.ResultSetExtractor;
+import org.springframework.jdbc.core.RowMapper;
 
 import springbook.user.domain.User;
 
@@ -61,7 +62,21 @@ public class UserDao {
 	}
 
 	public User get(String id) throws ClassNotFoundException, SQLException{
+		// #p265
+		return this.jdbcTemplate.queryForObject("select * from users where id = ?"
+					, new Object[] {id}
+					, new RowMapper<User>(){
+						public User mapRow(ResultSet rs, int rowNum)throws SQLException{
+							User user = new User();
+							user.setId(rs.getString("id"));
+							user.setName(rs.getString("name"));
+							user.setPassword(rs.getString("password"));
+							return user;
+						}
+					}
+				);
 		
+		/*
 		//Connection c = simpleConnectionMaker.makeNewConnection();	//#2
 		//Connection c = connectionMaker.makeConnection();	// #4
 		//this.c = connectionMaker.makeConnection();	// #7
@@ -97,6 +112,7 @@ public class UserDao {
 		}
 		//return this.user;
 		return user; 	//#p173
+		*/
 	}
 	
 	//public void add(User user) throws ClassNotFoundException, SQLException{
