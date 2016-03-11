@@ -26,6 +26,16 @@ public class UserDao {
 	private JdbcContext jdbcContext;	//#p233
 	private JdbcTemplate jdbcTemplate;	//#p260
 	
+	//#p273
+	private RowMapper<User> userMapper = new RowMapper<User>(){
+											public User mapRow(ResultSet rs, int rowNum)throws SQLException{
+												User user = new User();
+												user.setId(rs.getString("id"));
+												user.setName(rs.getString("name"));
+												user.setPassword(rs.getString("password"));
+												return user;
+											}
+										};
 	
 	/*//p239
 	public void setJdbcContext(JdbcContext jdbcContext){	//#p233
@@ -54,7 +64,7 @@ public class UserDao {
 		
 		this.jdbcTemplate = new JdbcTemplate(dataSource);	//#p260
 		
-		this.dataSource = dataSource;
+		//this.dataSource = dataSource;
 	}
 	
 	// #p127
@@ -62,19 +72,12 @@ public class UserDao {
 		this.connectionMaker = connectionMaker;
 	}
 
-	public User get(String id) throws ClassNotFoundException, SQLException{
+	//public User get(String id) throws ClassNotFoundException, SQLException{
+	public User get(String id){	//#p274
 		// #p265
 		return this.jdbcTemplate.queryForObject("select * from users where id = ?"
 					, new Object[] {id}
-					, new RowMapper<User>(){
-						public User mapRow(ResultSet rs, int rowNum)throws SQLException{
-							User user = new User();
-							user.setId(rs.getString("id"));
-							user.setName(rs.getString("name"));
-							user.setPassword(rs.getString("password"));
-							return user;
-						}
-					}
+					, this.userMapper	//#p273
 				);
 		
 		/*
@@ -115,9 +118,16 @@ public class UserDao {
 		return user; 	//#p173
 		*/
 	}
+
+	public List<User> getAll(){
+		return this.jdbcTemplate.query("select * from users order by id",
+				this.userMapper	//#p273
+		);
+	}
 	
 	//public void add(User user) throws ClassNotFoundException, SQLException{
-	public void add(final User user) throws ClassNotFoundException, SQLException{	// p229
+	//public void add(final User user) throws ClassNotFoundException, SQLException{	// p229
+	public void add(final User user){	// p274
 		//Connection c = simpleConnectionMaker.makeNewConnection();	//#2
 		//Connection c = connectionMaker.makeConnection();	// #7
 		/*
@@ -178,7 +188,8 @@ public class UserDao {
 		this.jdbcTemplate.update("insert into users (id,name,password) values(?,?,?)",user.getId(),user.getName(),user.getPassword());	//#p262
 	}
 	
-	public void deleteAll() throws SQLException{
+	//public void deleteAll() throws SQLException{	//#p274
+	public void deleteAll(){
 		/*
 		Connection c = dataSource.getConnection();	//#p164
 		
@@ -249,7 +260,8 @@ public class UserDao {
 		this.jdbcTemplate.update("delete from users");	// #p261
 	}
 	
-	public int getCount() throws SQLException{
+	//public int getCount() throws SQLException{
+	public int getCount(){	//#p274
 		return this.jdbcTemplate.queryForInt("select count(*) from users");	//#p264
 		/*
 		// #p263
@@ -323,20 +335,6 @@ public class UserDao {
 		
 		return count;
 		*/
-	}
-	
-	public List<User> getAll(){
-		return this.jdbcTemplate.query("select * from users order by id",
-			new RowMapper<User>(){
-				public User mapRow(ResultSet rs, int rowNum)throws SQLException{
-					User user = new User();
-					user.setId(rs.getString("id"));
-					user.setName(rs.getString("name"));
-					user.setPassword(rs.getString("password"));
-					return user;
-				}
-			}
-		);
 	}
 	
 	public void jdbcContextWithStatementStrategy(StatementStrategy stmt) throws SQLException{

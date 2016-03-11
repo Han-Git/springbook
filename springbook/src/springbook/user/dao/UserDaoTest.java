@@ -122,7 +122,7 @@ public class UserDaoTest {
 	}
 	
 	@Test
-	public void getAll() throws SQLException, ClassNotFoundException{
+	public void getAll(){
 		dao.deleteAll();
 		
 		List<User> users0 = dao.getAll();
