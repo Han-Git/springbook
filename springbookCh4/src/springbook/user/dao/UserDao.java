@@ -6,8 +6,11 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+
+import com.mysql.jdbc.MysqlErrorNumbers;
 
 import springbook.user.domain.User;
 
@@ -40,8 +43,19 @@ public class UserDao {
 		);
 	}
 	
-	public void add(final User user){	// p274
-		this.jdbcTemplate.update("insert into users (id,name,password) values(?,?,?)",user.getId(),user.getName(),user.getPassword());	//#p262
+	public void add(final User user) throws DuplicateUserIdException{	// p274
+		try{
+			this.jdbcTemplate.update("insert into users (id,name,password) values(?,?,?)",user.getId(),user.getName(),user.getPassword());	//#p262
+			this.jdbcTemplate.update("insert into users (id,name,password) values(?,?,?)","jmh","정명한","springno2");
+			this.jdbcTemplate.update("insert into users (id,name,password) values(?,?,?)","jmh","정명한","springno2");
+		}catch(SQLException e){
+			// ErrorCode가 MySql의 "Duplicatre Entry(1062)" 이면 전환
+			if(e.getErrorCode() == MysqlErrorNumbers.ER_DUP_ENTRY){
+				throw new DuplicateUserIdException(e);
+			}else{
+				throw new RuntimeException(e);
+			}
+		}
 	}
 	
 	public void deleteAll(){
