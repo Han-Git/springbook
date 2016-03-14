@@ -119,6 +119,12 @@ public class UserDaoTest {
 		assertThat(user1.getPassword(),is(user2.getPassword()));
 	}
 	
+	@Test
+	public void exceptionTest(){
+		dao.deleteAll();
+		dao.addExceptionTest();
+	}
+	
 	public static void main(String[] args)throws ClassNotFoundException, SQLException {
 		JUnitCore.main("springbook.user.dao.UserDaoTest");
 	}

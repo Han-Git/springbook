@@ -1,12 +1,13 @@
 package springbook.user.dao;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
 import javax.sql.DataSource;
 
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
@@ -28,6 +29,7 @@ public class UserDao {
 										};
 	public void setDataSource(DataSource dataSource){
 		this.jdbcTemplate = new JdbcTemplate(dataSource);	//#p260
+		this.dataSource = dataSource;
 	}
 
 	public User get(String id){	//#p274
@@ -43,19 +45,8 @@ public class UserDao {
 		);
 	}
 	
-	public void add(final User user) throws DuplicateUserIdException{	// p274
-		try{
-			this.jdbcTemplate.update("insert into users (id,name,password) values(?,?,?)",user.getId(),user.getName(),user.getPassword());	//#p262
-			this.jdbcTemplate.update("insert into users (id,name,password) values(?,?,?)","jmh","정명한","springno2");
-			this.jdbcTemplate.update("insert into users (id,name,password) values(?,?,?)","jmh","정명한","springno2");
-		}catch(SQLException e){
-			// ErrorCode가 MySql의 "Duplicatre Entry(1062)" 이면 전환
-			if(e.getErrorCode() == MysqlErrorNumbers.ER_DUP_ENTRY){
-				throw new DuplicateUserIdException(e);
-			}else{
-				throw new RuntimeException(e);
-			}
-		}
+	public void add(final User user){	// p274
+		this.jdbcTemplate.update("insert into users (id,name,password) values(?,?,?)",user.getId(),user.getName(),user.getPassword());	//#p262
 	}
 	
 	public void deleteAll(){
@@ -66,4 +57,34 @@ public class UserDao {
 		return this.jdbcTemplate.queryForInt("select count(*) from users");	//#p264
 	}
 	
+	
+	private DataSource dataSource;
+
+	
+	public void addExceptionTest() throws DuplicateUserIdException{
+		try{
+			Connection c = dataSource.getConnection();	// #137
+			PreparedStatement ps = c.prepareStatement("insert into users(id, name, password) values(?,?,?)");
+			ps.setString(1, "jmh");
+			ps.setString(2, "정명한");
+			ps.setString(3, "springno2");
+			
+			ps.executeUpdate();
+			
+			ps.setString(1, "jmh");
+			ps.setString(2, "정명한");
+			ps.setString(3, "springno2");
+			
+			ps.executeUpdate();
+			
+			ps.close();
+			c.close();
+		}catch(SQLException e){
+			if(e.getErrorCode()== MysqlErrorNumbers.ER_DUP_ENTRY){
+				throw new DuplicateUserIdException(e);
+			}else{
+				throw new RuntimeException(e);
+			}
+		}
+	}
 }
