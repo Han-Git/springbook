@@ -15,8 +15,11 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.GenericXmlApplicationContext;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
+import org.springframework.jdbc.support.SQLErrorCodeSQLExceptionTranslator;
+import org.springframework.jdbc.support.SQLExceptionTranslator;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -29,7 +32,9 @@ import springbook.user.domain.User;
 public class UserDaoTest {
 	
 	@Autowired
-	UserDao dao;	//#p188
+	private UserDao dao;	//#p188
+	@Autowired
+	private DataSource dataSource;
 	
 	private User user1;	//#p183
 	private User user2;	//#p183
@@ -38,9 +43,9 @@ public class UserDaoTest {
 	@Before
 	public void setUp(){
 		ApplicationContext context = new GenericXmlApplicationContext("test-applicationContext.xml");	// #p180
-		this.dao = context.getBean("userDao", UserDao.class);	// #p180
+		this.dao = context.getBean("userDao", UserDaoJdbc.class);	// #p180
 		DataSource dataSource = new SingleConnectionDataSource("jdbc:mysql://localhost:3306/testdb", "jmh","jmh", true);
-		dao.setDataSource(dataSource);
+		//dao.setDataSource(dataSource);
 		this.user1 = new User("jkonoury", "장지홍","springno1");	//#p183
 		this.user2 = new User("jmh", "정명한","springno2");	//#p183
 		this.user3 = new User("lyg", "이용규","springno3");	//#p183
@@ -120,9 +125,16 @@ public class UserDaoTest {
 	}
 	
 	@Test
-	public void exceptionTest(){
+	public void sqlExceptionTranslate(){	//p314
 		dao.deleteAll();
-		dao.addExceptionTest();
+		try{
+			dao.add(user1);
+			dao.add(user1);
+		}catch(DuplicateKeyException ex){
+			SQLException sqlEx = (SQLException) ex.getRootCause();
+			SQLExceptionTranslator set = new SQLErrorCodeSQLExceptionTranslator(this.dataSource);
+			assertThat(set.translate(null, null, sqlEx),is(DuplicateKeyException.class));
+		}
 	}
 	
 	public static void main(String[] args)throws ClassNotFoundException, SQLException {
