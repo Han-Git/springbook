@@ -8,7 +8,26 @@ public class User {
 	Level level;
 	int login;
 	int recommend;
+
+	public User(String id, String name, String password) {
+		this.id = id;
+		this.name = name;
+		this.password = password;
+	}
 	
+	public User() {
+		// TODO Auto-generated constructor stub
+	}
+	
+	public User(String id, String name, String password, Level level, int login, int recommend) {
+		this.id = id;
+		this.name = name;
+		this.password = password;
+		this.level = level;
+		this.login = login;
+		this.recommend = recommend;
+	}
+
 	public Level getLevel() {
 		return level;
 	}
@@ -33,16 +52,6 @@ public class User {
 		this.recommend = recommend;
 	}
 
-	public User(String id, String name, String password) {
-		this.id = id;
-		this.name = name;
-		this.password = password;
-	}
-	
-	public User() {
-		// TODO Auto-generated constructor stub
-	}
-	
 	public String getId(){
 		return id;
 	}
