@@ -15,6 +15,10 @@
 		<property name="password" value="jmh"/>
 	</bean>
 	
+	<bean id="userService" class="springbook.user.service.UserService">
+		<property name="userDao" ref="userDao"/>
+	</bean>
+	
 <!-- 	p301 -->
 	<bean id="Oracle" class="org.springframework.jdbc.support.SQLErrorCodes">
 		<property name="badSqlGrammarCodes">

@@ -25,10 +25,10 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import springbook.user.domain.Level;
 import springbook.user.domain.User;
+import springbook.user.service.UserService;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)	// #p185
-//@ContextConfiguration(locations="/applicationContext.xml")	// #p185
 @ContextConfiguration(locations="/test-applicationContext.xml")	// #p194
 public class UserDaoTest {
 	
