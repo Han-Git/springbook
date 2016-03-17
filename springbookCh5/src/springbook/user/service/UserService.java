@@ -1,49 +1,84 @@
 package springbook.user.service;
 
+import java.sql.Connection;
 import java.util.List;
+
+import javax.sql.DataSource;
+
+import org.springframework.jdbc.datasource.DataSourceUtils;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import springbook.user.dao.UserDao;
 import springbook.user.domain.Level;
 import springbook.user.domain.User;
 
 public class UserService {
-	UserDao userDao;
-	
 	public static final int MIN_LOGCOUNT_FOR_SILVER = 50;
 	public static final int MIN_RECCOMEND_FOR_GOLD = 30;
+	
+	UserDao userDao;
+	private DataSource dataSource;
 	
 	public void setUserDao(UserDao userDao){
 		this.userDao = userDao;
 	}
 	
-	public void upgradeLevels(){
-		/* P338 removed because of Refactoring
-		List<User> users = userDao.getAll();
-		for(User user : users){
-			Boolean changed = null;
-			if(user.getLevel()== Level.BASIC && user.getLogin() >=50){
-				user.setLevel(Level.SILVER);
-				changed = true;
-			}
-			else if(user.getLevel()==Level.SILVER && user.getRecommend()>=30){
-				user.setLevel(Level.GOLD);
-				changed = true;
-			}else if(user.getLevel()== Level.GOLD){
-				changed = false;
-			}else{
-				changed = false;
-			}
-			if(changed){
-				userDao.update(user);
-			}
-		}
-		*/
+	public void setDataSource(DataSource dataSource){
+		this.dataSource = dataSource;
+	}
+
+	// p363
+//	public void upgradeLevels(){
+//		/* P338 removed because of Refactoring
+//		List<User> users = userDao.getAll();
+//		for(User user : users){
+//			Boolean changed = null;
+//			if(user.getLevel()== Level.BASIC && user.getLogin() >=50){
+//				user.setLevel(Level.SILVER);
+//				changed = true;
+//			}
+//			else if(user.getLevel()==Level.SILVER && user.getRecommend()>=30){
+//				user.setLevel(Level.GOLD);
+//				changed = true;
+//			}else if(user.getLevel()== Level.GOLD){
+//				changed = false;
+//			}else{
+//				changed = false;
+//			}
+//			if(changed){
+//				userDao.update(user);
+//			}
+//		}
+//		*/
+//		
+//		List<User> users = userDao.getAll();
+//		for(User user : users){
+//			if(canUpgradeLevel(user)){
+//				upgradeLevel(user);
+//			}
+//		}
+//	}
+	
+	public void upgradeLevels() throws Exception{
+		TransactionSynchronizationManager.initSynchronization();
+		Connection c = DataSourceUtils.getConnection(dataSource);
+		c.setAutoCommit(false);
 		
-		List<User> users = userDao.getAll();
-		for(User user : users){
-			if(canUpgradeLevel(user)){
-				upgradeLevel(user);
+		try{
+			List<User> users = userDao.getAll();
+			for(User user : users){
+				if(canUpgradeLevel(user)){
+					upgradeLevel(user);
+				}
 			}
+			c.commit();
+		}catch(Exception e){
+			c.rollback();
+			throw e;
+		}finally{
+			DataSourceUtils.releaseConnection(c, dataSource);
+			TransactionSynchronizationManager.unbindResource(this.dataSource);
+			TransactionSynchronizationManager.clearSynchronization();
 		}
 	}
 	
