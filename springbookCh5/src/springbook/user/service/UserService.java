@@ -59,7 +59,8 @@ public class UserService {
 		}
 	}
 	
-	private void upgradeLevel(User user){
+	//private void upgradeLevel(User user){	// #p350 
+	protected void upgradeLevel(User user){
 		/* p343 refactoring
 		if(user.getLevel()== Level.BASIC){
 			user.setLevel(Level.SILVER);
