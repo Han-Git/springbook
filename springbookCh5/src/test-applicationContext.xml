@@ -14,11 +14,17 @@
 		<property name="username" value="jmh"/>
 		<property name="password" value="jmh"/>
 	</bean>
+	
+<!-- 	p374 -->
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource"/>
+	</bean>
 
 <!-- 	p365 -->
 	<bean id="userService" class="springbook.user.service.UserService">
 		<property name="userDao" ref="userDao"/>
-		<property name="dataSource" ref="dataSource"></property>
+<!-- 		<property name="dataSource" ref="dataSource"/> -->
+		<property name="transactionManager" ref="transactionManager"/>
 	</bean>
 	
 <!-- 	p301 -->
