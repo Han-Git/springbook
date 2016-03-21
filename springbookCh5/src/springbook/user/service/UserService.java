@@ -12,6 +12,7 @@ import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
+import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -29,6 +30,12 @@ public class UserService {
 	UserDao userDao;
 	// private DataSource dataSource;	// p374
 	private PlatformTransactionManager transactionManager;
+	
+	private MailSender mailSender;
+	
+	public void setMailSender(MailSender mailSender){
+		this.mailSender = mailSender;
+	}
 	
 	public void setTransactionManager(PlatformTransactionManager transactionManager){
 		this.transactionManager = transactionManager;
@@ -148,8 +155,10 @@ public class UserService {
 	}
 	
 	private void sendUpgradeEMail(User user) {
-		JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-		mailSender.setHost("mail.server.com");
+
+		//p387 removed because of DI
+//		JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+//		mailSender.setHost("mail.server.com");
 		
 		SimpleMailMessage mailMessage = new SimpleMailMessage();
 		mailMessage.setTo(user.getEmail());
