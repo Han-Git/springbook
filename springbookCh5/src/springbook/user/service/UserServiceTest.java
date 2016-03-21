@@ -6,6 +6,7 @@ import static org.junit.Assert.fail;
 import static springbook.user.service.UserService.MIN_LOGCOUNT_FOR_SILVER;	//p347
 import static springbook.user.service.UserService.MIN_RECCOMEND_FOR_GOLD;	//p347
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -13,7 +14,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.MailException;
 import org.springframework.mail.MailSender;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -43,6 +47,22 @@ public class UserServiceTest {
 	
 	static class TestUserServiceException extends RuntimeException{
 		
+	}
+	
+	static class MockMailSender implements MailSender{
+		private List<String> requests = new ArrayList<String>();
+		
+		public List<String> getRequests(){
+			return requests;
+		}
+		
+		public void send(SimpleMailMessage mailMessage) throws MailException {
+			requests.add(mailMessage.getTo()[0]);
+		}
+
+		public void send(SimpleMailMessage[] mailMessage) throws MailException {
+			
+		}
 	}
 	
 	@Autowired
@@ -82,11 +102,15 @@ public class UserServiceTest {
 	*/
 	
 	@Test
+	@DirtiesContext	// 컨택스트의 DI 설정을 변경하는 테스트라는 것을 알려준다.
 	public void upgradeLevels()throws Exception{
 		userDao.deleteAll();
 		for(User user:users){
 			userDao.add(user);
 		}
+		
+		MockMailSender mockMailSender = new MockMailSender();	// P397 매일 발송 결과를 테스트할수 있도록 목오브젝트를 만들어 userService의 의존 오브젝트로 주입해준다.
+		userService.setMailSender(mockMailSender);	// P397
 		
 		userService.upgradeLevels();
 		
@@ -103,6 +127,12 @@ public class UserServiceTest {
 		checkLevelUpgraded(users.get(2),false);
 		checkLevelUpgraded(users.get(3),true);
 		checkLevelUpgraded(users.get(4),false);
+		
+		// P397 목오브젝트에 저장된 메일 수신자 목록을 가져와 업그레이드 대상과 일치하는지 확인한다.
+		List<String> request = mockMailSender.getRequests();
+		assertThat(request.size(), is(2));	
+		assertThat(request.get(0), is(users.get(1).getEmail()));
+		assertThat(request.get(1), is(users.get(3).getEmail()));
 		
 	}
 	
