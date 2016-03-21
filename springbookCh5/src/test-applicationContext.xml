@@ -28,9 +28,10 @@
 		<property name="mailSender" ref="mailSender"/>
 	</bean>
 	
-	<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
-		<property name="host" value="mail.server.com"/>
-	</bean>
+<!-- 	<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl"> -->
+<!-- 		<property name="host" value="mail.server.com"/> -->
+<!-- 	</bean> -->
+	<bean id="mailSender" class="springbook.user.service.DummyMailSender"/>
 	
 <!-- 	p301 -->
 	<bean id="Oracle" class="org.springframework.jdbc.support.SQLErrorCodes">
