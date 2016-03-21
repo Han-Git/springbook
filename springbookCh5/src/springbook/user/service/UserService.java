@@ -12,6 +12,8 @@ import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
@@ -146,6 +148,18 @@ public class UserService {
 	}
 	
 	private void sendUpgradeEMail(User user) {
+		JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+		mailSender.setHost("mail.server.com");
+		
+		SimpleMailMessage mailMessage = new SimpleMailMessage();
+		mailMessage.setTo(user.getEmail());
+		mailMessage.setFrom("useradmin@ksug.org");
+		mailMessage.setSubject("Upgrade 안내");
+		mailMessage.setText("사용자의 등급이 "+user.getLevel().name()+ "로 업그레이드 되었습니다.");
+		
+		mailSender.send(mailMessage);
+		
+		/*	//p385 
 		Properties props = new Properties();
 		props.put("mail.smtp.host", "mail.ksug.org");
 		Session s = Session.getInstance(props, null);
@@ -164,6 +178,7 @@ public class UserService {
 		}catch(MessagingException e){
 			throw new RuntimeException(e);
 		}
+		*/
 	}
 
 	public void add(User user){
