@@ -3,8 +3,8 @@ package springbook.user.service;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
-import static springbook.user.service.UserService.MIN_LOGCOUNT_FOR_SILVER;	//p347
-import static springbook.user.service.UserService.MIN_RECCOMEND_FOR_GOLD;	//p347
+import static springbook.user.service.UserServiceImpl.MIN_LOGCOUNT_FOR_SILVER;	//p347
+import static springbook.user.service.UserServiceImpl.MIN_RECCOMEND_FOR_GOLD;	//p347
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,7 +30,7 @@ import springbook.user.domain.User;
 @ContextConfiguration(locations="/test-applicationContext.xml")
 public class UserServiceTest {
 
-	static class TestUserService extends UserService{
+	static class TestUserService extends UserServiceImpl{
 		private String id;
 		
 		private TestUserService(String id){
@@ -69,6 +69,9 @@ public class UserServiceTest {
 	UserService userService;
 	
 	@Autowired
+	UserServiceImpl userServiceImpl;
+	
+	@Autowired
 	UserDao userDao;
 	
 	@Autowired
@@ -78,7 +81,6 @@ public class UserServiceTest {
 	
 	@Autowired
 	PlatformTransactionManager transactionManager;
-	
 	
 	@Before
 	public void setUp(){
@@ -99,7 +101,7 @@ public class UserServiceTest {
 		}
 		
 		MockMailSender mockMailSender = new MockMailSender();	// P397 매일 발송 결과를 테스트할수 있도록 목오브젝트를 만들어 userService의 의존 오브젝트로 주입해준다.
-		userService.setMailSender(mockMailSender);	// P397
+		userServiceImpl.setMailSender(mockMailSender);	// P397
 		
 		userService.upgradeLevels();
 		checkLevelUpgraded(users.get(0),false);
@@ -145,17 +147,20 @@ public class UserServiceTest {
 	
 	@Test
 	public void upgradeAllorNothing()throws Exception{
-		UserService testUserService = new TestUserService(users.get(3).getId());
+		TestUserService testUserService = new TestUserService(users.get(3).getId());
 		testUserService.setUserDao(this.userDao);
-		testUserService.setTransactionManager(transactionManager);
 		testUserService.setMailSender(mailSender);
+		
+		UserServiceTx txUserService = new UserServiceTx();
+		txUserService.setTransactionManager(transactionManager);
+		txUserService.setUserService(txUserService);
 		
 		userDao.deleteAll();
 		for(User user : users){
 			userDao.add(user);
 		}
 		try{
-			testUserService.upgradeLevels();
+			txUserService.upgradeLevels();
 			fail("TestUserServiceException expected");
 		}catch(TestUserServiceException e){
 			
