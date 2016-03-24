@@ -85,22 +85,22 @@ public class UserServiceTest {
 	@Before
 	public void setUp(){
 		users = Arrays.asList(
-					new User("bumjin","¹Ú¹üÁø","p1",Level.BASIC,MIN_LOGCOUNT_FOR_SILVER-1,0,"test1@gmail.com"),
-					new User("joytouch","°­¸í¼º","p2",Level.BASIC,MIN_LOGCOUNT_FOR_SILVER,0,"test2gmail.com"),
-					new User("erwins","½Å½ÂÇÑ","p3",Level.SILVER,60,MIN_RECCOMEND_FOR_GOLD-1,"test3gmail.com"),
-					new User("madnite1","ÀÌ»óÈ£","p4",Level.SILVER,60,MIN_RECCOMEND_FOR_GOLD,"test4gmail.com"),
-					new User("jmh","Á¤¸íÇÑ","p5",Level.GOLD,100,100,"topofstar0@gmail.com")
+					new User("bumjin","ë°•ë²”ì§„","p1",Level.BASIC,MIN_LOGCOUNT_FOR_SILVER-1,0,"test1@gmail.com"),
+					new User("joytouch","ê°•ëª…ì„±","p2",Level.BASIC,MIN_LOGCOUNT_FOR_SILVER,0,"test2gmail.com"),
+					new User("erwins","ì‹ ìŠ¹í•œ","p3",Level.SILVER,60,MIN_RECCOMEND_FOR_GOLD-1,"test3gmail.com"),
+					new User("madnite1","ì´ìƒí˜¸","p4",Level.SILVER,60,MIN_RECCOMEND_FOR_GOLD,"test4gmail.com"),
+					new User("jmh","ì •ëª…í•œ","p5",Level.GOLD,100,100,"topofstar0@gmail.com")
 				);
 	}
 	@Test
-	@DirtiesContext	// ÄÁÅÃ½ºÆ®ÀÇ DI ¼³Á¤À» º¯°æÇÏ´Â Å×½ºÆ®¶ó´Â °ÍÀ» ¾Ë·ÁÁØ´Ù.
+	@DirtiesContext	// ì»¨íƒìŠ¤íŠ¸ì˜ DI ì„¤ì •ì„ ë³€ê²½í•˜ëŠ” í…ŒìŠ¤íŠ¸ë¼ëŠ” ê²ƒì„ ì•Œë ¤ì¤€ë‹¤.
 	public void upgradeLevels()throws Exception{
 		userDao.deleteAll();
 		for(User user:users){
 			userDao.add(user);
 		}
 		
-		MockMailSender mockMailSender = new MockMailSender();	// P397 ¸ÅÀÏ ¹ß¼Û °á°ú¸¦ Å×½ºÆ®ÇÒ¼ö ÀÖµµ·Ï ¸ñ¿ÀºêÁ§Æ®¸¦ ¸¸µé¾î userServiceÀÇ ÀÇÁ¸ ¿ÀºêÁ§Æ®·Î ÁÖÀÔÇØÁØ´Ù.
+		MockMailSender mockMailSender = new MockMailSender();	// P397 ë§¤ì¼ ë°œì†¡ ê²°ê³¼ë¥¼ í…ŒìŠ¤íŠ¸í• ìˆ˜ ìˆë„ë¡ ëª©ì˜¤ë¸Œì íŠ¸ë¥¼ ë§Œë“¤ì–´ userServiceì˜ ì˜ì¡´ ì˜¤ë¸Œì íŠ¸ë¡œ ì£¼ì…í•´ì¤€ë‹¤.
 		userServiceImpl.setMailSender(mockMailSender);	// P397
 		
 		userService.upgradeLevels();
@@ -110,7 +110,7 @@ public class UserServiceTest {
 		checkLevelUpgraded(users.get(3),true);
 		checkLevelUpgraded(users.get(4),false);
 		
-		// P397 ¸ñ¿ÀºêÁ§Æ®¿¡ ÀúÀåµÈ ¸ŞÀÏ ¼ö½ÅÀÚ ¸ñ·ÏÀ» °¡Á®¿Í ¾÷±×·¹ÀÌµå ´ë»ó°ú ÀÏÄ¡ÇÏ´ÂÁö È®ÀÎÇÑ´Ù.
+		// P397 ëª©ì˜¤ë¸Œì íŠ¸ì— ì €ì¥ëœ ë©”ì¼ ìˆ˜ì‹ ì ëª©ë¡ì„ ê°€ì ¸ì™€ ì—…ê·¸ë ˆì´ë“œ ëŒ€ìƒê³¼ ì¼ì¹˜í•˜ëŠ”ì§€ í™•ì¸í•œë‹¤.
 		List<String> request = mockMailSender.getRequests();
 		assertThat(request.size(), is(2));	
 		assertThat(request.get(0), is(users.get(1).getEmail()));
@@ -153,7 +153,7 @@ public class UserServiceTest {
 		
 		UserServiceTx txUserService = new UserServiceTx();
 		txUserService.setTransactionManager(transactionManager);
-		txUserService.setUserService(txUserService);
+		txUserService.setUserService(testUserService);
 		
 		userDao.deleteAll();
 		for(User user : users){

@@ -22,7 +22,7 @@ public class UserServiceTx implements UserService{
 		userService.add(user);;
 	}
 
-	public void upgradeLevels(){
+	public void upgradeLevels() {
 		TransactionStatus status = this.transactionManager.getTransaction(new DefaultTransactionDefinition());
 		try{
 			userService.upgradeLevels();
