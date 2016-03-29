@@ -34,9 +34,9 @@ public class UserDaoTest {
 	
 	@Before
 	public void setUp(){
-		this.user1 = new User("jkonoury", "ÀåÁöÈ«","springno1", Level.BASIC , 1,0,"test1@naver.com");
-		this.user2 = new User("jmh", "Á¤¸íÇÑ","springno2", Level.SILVER , 55,10,"test2@naver.com");
-		this.user3 = new User("lyg", "ÀÌ¿ë±Ô","springno3", Level.GOLD , 100,40,"test3@naver.com");
+		this.user1 = new User("jkonoury", "ì¥ì§€í™","springno1", Level.BASIC , 1,0,"test1@naver.com");
+		this.user2 = new User("jmh", "ì •ëª…í•œ","springno2", Level.SILVER , 55,10,"test2@naver.com");
+		this.user3 = new User("lyg", "ì´ìš©ê·œ","springno3", Level.GOLD , 100,40,"test3@naver.com");
 	}
 	
 	@Test
@@ -46,7 +46,7 @@ public class UserDaoTest {
 		dao.add(user1);
 		dao.add(user2);
 		
-		user1.setName("¿À¹Î±Ô");
+		user1.setName("ì˜¤ë¯¼ê·œ");
 		user1.setPassword("spring06");
 		user1.setLevel(Level.GOLD);
 		user1.setLogin(1000);
