@@ -91,8 +91,6 @@ public class UserServiceTest {
 		}
 	}
 	
-	String test;
-	
 	@Autowired
 	UserService userService;
 	
