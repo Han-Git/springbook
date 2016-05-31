@@ -1,4 +1,4 @@
-package springbook.learningtest.ioc.resource;
+package springbook.learningtest.spring.ioc.bean;
 
 public class StringPrinter implements Printer {
 	private StringBuffer buffer = new StringBuffer();
