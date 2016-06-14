@@ -1,5 +1,6 @@
 package springbook.learningtest.spring.ioc;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
@@ -23,6 +24,23 @@ public class ApplicationContextTest {
 		
 		Hello hello1 = ac.getBean("hello1", Hello.class);
 		assertThat(hello1, is(notNullValue()));
+		
+		BeanDefinition helloDef = new RootBeanDefinition(Hello.class);
+		//빈 메타정보를 담은 오브젝트를 만든다. 빈클래스는 Hello로 지정한다. <bean class="springbook.leanringtest..Hello"/>에 해당하는 정보이다.
+			
+		helloDef.getPropertyValues().addPropertyValue("name", "Spring");
+		// 빈의 name 프로퍼티에 들어갈 값을 지정한다.<property name="name" value="Spring"/> 에 해당한다. 
+		
+		ac.registerBeanDefinition("hello2", helloDef);
+		// 앞에서 생성한 빈메타정보를 hello2라는 이름을 가진 빈으로 해서 등록한다. <bean id="hello2" ... /> 에 해당한다.
+		
+		Hello hello2 = ac.getBean("hello2", Hello.class);
+		assertThat(hello2.sayHello(), is("Hello Spring"));
+		// BeanDefinition으로 등록된 빈이 컨테이너에 의해 만들어지고 프로퍼티 설정이 됐는지 확인한다.
+		
+		assertThat(hello1, is(not(hello2)));
+		// 처음등록한 빈과 두번째 등록한 빈이 모두 동일한 Hello 클래스 지만 별개의 오브젝트로 생성됐다.
+		assertThat(ac.getBeanFactory().getBeanDefinitionCount(), is(2));
 	}
 	
 	@Test
