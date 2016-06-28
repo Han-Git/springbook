@@ -9,14 +9,21 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.RuntimeBeanReference;
 import org.springframework.beans.factory.support.RootBeanDefinition;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.context.support.GenericXmlApplicationContext;
 import org.springframework.context.support.StaticApplicationContext;
+import org.springframework.util.ClassUtils;
+import org.springframework.util.StringUtils;
 
 import springbook.learningtest.spring.ioc.bean.Hello;
+import springbook.learningtest.spring.ioc.bean.Printer;
 import springbook.learningtest.spring.ioc.bean.StringPrinter;
 
 public class ApplicationContextTest {
+	
+	private String basePath = StringUtils.cleanPath(ClassUtils.classPackageAsResourcePath(getClass())) + "/";
+	// 현재 클래스의 패키지 정보를 클래스패스 형식으로 만들어서 미리 저장해둔 것이다.
 	
 	@Test
 	public void test1(){
@@ -93,5 +100,25 @@ public class ApplicationContextTest {
 		Hello hello = ac.getBean("hello", Hello.class);
 		hello.print();
 		assertThat( ac.getBean("printer").toString() , is("Hello Spring"));
+	}
+	
+	@Test
+	public void contextHierachy(){
+		// 계층구조 applicationContext test
+		System.out.println("basePath==="+basePath);
+		ApplicationContext parent = new GenericXmlApplicationContext(basePath + "parentContext.xml");
+		GenericApplicationContext child = new GenericApplicationContext(parent);
+		XmlBeanDefinitionReader reader = new XmlBeanDefinitionReader(child);
+		reader.loadBeanDefinitions(basePath+"childContext.xml");
+		child.refresh(); // 리더를 사용해서 설정을 읽은 경우에는 반드시 refresh() 를 통해 초기화해야 한다.
+		
+		Printer printer  = child.getBean("printer", Printer.class);
+		assertThat(printer, is(notNullValue()));
+		
+		Hello hello = child.getBean("hello", Hello.class);
+		assertThat(hello, is(notNullValue()));
+		
+		hello.print();
+		assertThat(printer.toString(), is("Hello Child"));	// getBean()으로 가져온 hello빈은 자식 컨택스트에 존재하는 것임을 확인할 수 있다.
 	}
 }
