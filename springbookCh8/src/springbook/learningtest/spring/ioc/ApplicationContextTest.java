@@ -10,6 +10,7 @@ import org.springframework.beans.factory.config.RuntimeBeanReference;
 import org.springframework.beans.factory.support.RootBeanDefinition;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
 import org.springframework.context.support.GenericApplicationContext;
+import org.springframework.context.support.GenericXmlApplicationContext;
 import org.springframework.context.support.StaticApplicationContext;
 
 import springbook.learningtest.spring.ioc.bean.Hello;
@@ -72,12 +73,25 @@ public class ApplicationContextTest {
 	public void genericApplicationContext(){
 		GenericApplicationContext ac = new GenericApplicationContext();
 		XmlBeanDefinitionReader reader = new XmlBeanDefinitionReader(ac);
+		
+		// XmlBeanDefinitionReader는 기본적으로 클래스패스로 정의된리소스로 부터 파일을 읽는다.
 		reader.loadBeanDefinitions("springbook/learningtest/spring/ioc/genericApplicationContext.xml");
-		ac.refresh();
+		ac.refresh();  //모든 메타정보가 등록이 완료했으니 애플리케이션 컨테이너를 초기화하라는 명령이다.
 		
 		Hello hello = ac.getBean("hello", Hello.class);
 		hello.print();
 		
 		assertThat(ac.getBean("printer").toString(), is("Hello Spring"));
+	}
+	
+	@Test
+	public void genericXmlApplicationContext() {
+		GenericApplicationContext ac = new GenericXmlApplicationContext(
+				"springbook/learningtest/spring/ioc/genericApplicationContext.xml");
+		// application context 생성과 동시에 xml 파일을 읽어오고 초기화까지 수행한다.
+		
+		Hello hello = ac.getBean("hello", Hello.class);
+		hello.print();
+		assertThat( ac.getBean("printer").toString() , is("Hello Spring"));
 	}
 }
