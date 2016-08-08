@@ -28,8 +28,12 @@ public class HelloRestController {
 		return helloList;
 	}
 	
-	@RequestMapping("/")
-	public String index(){
-		return "helloworld!";
+	
+	@RequestMapping("/helloworld")
+	public String index2(Model model) {
+		System.out.println("test2");
+		model.addAttribute("name", "SpringBlog from Millky");
+		return "helloworld";
 	}
+	
 }
