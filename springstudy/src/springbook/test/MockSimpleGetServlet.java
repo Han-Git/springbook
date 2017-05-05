@@ -15,6 +15,8 @@ public class MockSimpleGetServlet {
   public void mockDoGet() throws Exception {
     MockHttpServletRequest req = new MockHttpServletRequest("GET","/hello");
     req.addParameter("name", "Spring");
+    req.setParameter("name", "Spring");
+    
     
     MockHttpServletResponse res = new MockHttpServletResponse();
     
