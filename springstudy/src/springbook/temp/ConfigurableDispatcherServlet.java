@@ -59,7 +59,8 @@ public class ConfigurableDispatcherServlet extends DispatcherServlet {
     super.service(req, res);
   }
 
-  protected WebApplicationContext CreateWebApplicationContext(ApplicationContext parent) {
+  @Override
+  protected WebApplicationContext createWebApplicationContext(ApplicationContext parent) {
     AbstractRefreshableWebApplicationContext wac = new AbstractRefreshableWebApplicationContext() {
 
       protected void loadBeanDefinitions(DefaultListableBeanFactory beanFactory)
@@ -76,6 +77,7 @@ public class ConfigurableDispatcherServlet extends DispatcherServlet {
     };
     wac.setServletContext(getServletContext());
     wac.setServletConfig(getServletConfig());
+    wac.refresh();
 
     return wac;
   }

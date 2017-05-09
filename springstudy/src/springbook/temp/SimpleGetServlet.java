@@ -10,7 +10,8 @@ import javax.servlet.http.HttpServletResponse;
 
 public class SimpleGetServlet extends HttpServlet {
 
-  protected void doget(HttpServletRequest req, HttpServletResponse res)
+  @Override
+  protected void doGet(HttpServletRequest req, HttpServletResponse res)
       throws ServletException, IOException {
     String name = req.getParameter("name");
 

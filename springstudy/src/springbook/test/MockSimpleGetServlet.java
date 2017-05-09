@@ -24,10 +24,10 @@ public class MockSimpleGetServlet {
     servlet.service(req, res);
     
      
-    //assertThat(res.getContentAsString(),is("<HTML><BODY>Hello Spring</BODY></HTML>"));
-    //assertThat(res.getContentAsString().contains("Hello Spring"), is(true));
+    assertThat(res.getContentAsString(),is("<HTML><BODY>Hello Spring</BODY></HTML>"));
+    assertThat(res.getContentAsString().contains("Hello Spring"), is(true));
  // 위 결과가 안나오고 아래 결과가나옴.
-    assertThat(res.getContentAsString(),is(""));
-    assertThat(res.getContentAsString().contains("Hello Spring"), is(false));
+//    assertThat(res.getContentAsString(),is(""));
+//    assertThat(res.getContentAsString().contains("Hello Spring"), is(false));
   }
 }
